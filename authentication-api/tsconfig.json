@@ -1,3 +1,4 @@
+/* Visit https://aka.ms/tsconfig.json to read more about this file */
 {
   "compilerOptions": {
     "target": "es2019",
@@ -10,6 +11,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipDefaultLibCheck": true
+    "skipLibCheck": true
   }
 }
