@@ -1,5 +1,5 @@
 import db from '../db';
-import DatabaseError from '../errors/database.error.model';
+import DatabaseError from '../models/errors/database.error.model';
 import User from '../models/user.model';
 
 class UserRepository {
