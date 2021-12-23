@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import ForbiddenError from '../models/forbidden.error.model';
+import userRepository from '../repositories/user.repository';
 
 const authorizationRoute = Router();
 
 authorizationRoute.post(
   '/token',
-  (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authorizationHeader = req.headers['authorization'];
 
@@ -26,6 +27,12 @@ authorizationRoute.post(
       if (!username || !password) {
         throw new ForbiddenError('Credenciais nao preenchidas ');
       }
+
+      const user = await userRepository.findByUsernameAndPassword(
+        username,
+        password
+      );
+      console.log(user);
     } catch (error) {
       next(error);
     }
