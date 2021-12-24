@@ -5,19 +5,20 @@ import statusRoute from './routes/status.route';
 import usersRoute from './routes/users.route';
 
 const app = express();
-// Config da aplicação
+
+// Configurações da aplicação
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//Config de rotas
-app.use(usersRoute);
+// Configurações de Rotas
 app.use(statusRoute);
+app.use(usersRoute);
 app.use(authorizationRoute);
 
-// Config de Handlers dde erro
+// Configuração dos Handlers de Erro
 app.use(errorHandler);
 
-// Start the server
+// Inicialização do servidor
 app.listen(3000, () => {
-  console.log('Aplicação executando na porta 3000');
+  console.log('Aplicação executando na porta 3000!');
 });
