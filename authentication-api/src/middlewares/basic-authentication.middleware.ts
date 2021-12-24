@@ -1,31 +1,31 @@
 import { NextFunction, Request, Response } from 'express';
-import ForbiddenError from '../models/forbidden.error.model';
+import { ForbiddenError } from '../errors/forbidden.error';
 import userRepository from '../repositories/user.repository';
 
-async function basicAuthenticationMiddleware(
+const basicAuthMiddleware = async (
   req: Request,
   res: Response,
   next: NextFunction
-) {
+): Promise<void> => {
   try {
-    const authorizationHeader = req.headers['authorization'];
+    const authorizationHeader = req.headers.authorization;
 
     if (!authorizationHeader) {
-      throw new ForbiddenError('Credenciais não informadas');
+      throw new ForbiddenError({ log: 'Credenciais not found' });
     }
 
-    const [authenticationType, token] = authorizationHeader.split(' ');
+    const [authorizationType, base64Token] = authorizationHeader.split(' ');
 
-    if (authenticationType !== 'Basic' || !token) {
-      throw new ForbiddenError('Tipo de authenticação inválido');
+    if (authorizationType !== 'Basic') {
+      throw new ForbiddenError({ log: 'Invalid authorization type' });
     }
 
-    const tokenContent = Buffer.from(token, 'base64').toString('utf-8');
-
-    const [username, password] = tokenContent.split(':');
+    const [username, password] = Buffer.from(base64Token, 'base64')
+      .toString('utf-8')
+      .split(':');
 
     if (!username || !password) {
-      throw new ForbiddenError('Credenciais não preenchidas');
+      throw new ForbiddenError({ log: 'Credenciais not found' });
     }
 
     const user = await userRepository.findByUsernameAndPassword(
@@ -34,14 +34,14 @@ async function basicAuthenticationMiddleware(
     );
 
     if (!user) {
-      throw new ForbiddenError('Usuário ou senha inválidos!');
+      throw new ForbiddenError({ log: 'Invalid credentials' });
     }
 
     req.user = user;
-    next();
+    return next();
   } catch (error) {
-    next(error);
+    return next(error);
   }
-}
+};
 
-export default basicAuthenticationMiddleware;
+export default basicAuthMiddleware;
